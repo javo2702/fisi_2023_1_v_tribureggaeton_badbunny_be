@@ -21,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-@RequestMapping("/api/atencioncliente/v1/productos")
+@RequestMapping("/ne-gestion-productos/akinms/atencion-cliente/v1")
 public class ProductoRestController {
     @Autowired
     private IProductoBusiness productoBusiness;
@@ -57,7 +57,7 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }*/
-    @PostMapping("/registrar")
+    @PostMapping("/productos/registrar")
     public ResponseEntity<RespuestaProductos> saveProduct(@RequestBody Producto producto){
         RespuestaProductos respuesta = new RespuestaProductos();
         respuesta.setMensaje("Error al guardar producto");
@@ -70,14 +70,14 @@ public class ProductoRestController {
             return new ResponseEntity<>(respuesta,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/consultar/{id}")
-    public ResponseEntity<RespuestaProductos> showProduct(@PathVariable Long id){
+    @GetMapping("/consultar-productos/{idProducto}")
+    public ResponseEntity<RespuestaProductos> showProduct(@PathVariable Long idProducto){
         //public ResponseEntity<Producto> showProduct(@PathVariable Long id){
         RespuestaProductos respuesta = new RespuestaProductos();
-        respuesta.setMensaje("Producto con id: "+id+" no se encuentra registrado");
+        respuesta.setMensaje("Producto con id: "+idProducto+" no se encuentra registrado");
         try{
-            Producto producto = productoBusiness.showProduct(id);
-            respuesta.setMensaje("Producto con id: "+id);
+            Producto producto = productoBusiness.showProduct(idProducto);
+            respuesta.setMensaje("Producto con id: "+idProducto);
             respuesta.setProductos(producto);
             return new ResponseEntity<>(respuesta,
                     HttpStatus.OK);
@@ -87,10 +87,10 @@ public class ProductoRestController {
             return new ResponseEntity<>(respuesta,HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/listarproductos/bodega/{id}")
-    public ResponseEntity<RespuestaProductos> listarProductosBodega(@PathVariable Long id) {
+    @GetMapping("/listar-productos/{idBodega}")
+    public ResponseEntity<RespuestaProductos> listarProductosBodega(@PathVariable Long idBodega) {
         try{
-            List<?> productos = productoBusiness.listProductsBodega(id);
+            List<?> productos = productoBusiness.listProductsBodega(idBodega);
             RespuestaProductos respuesta = new RespuestaProductos("Productos por Bodega",productos);
             return new ResponseEntity<>(respuesta, HttpStatus.OK);
         } catch (BusinessException e){
@@ -116,11 +116,11 @@ public class ProductoRestController {
             throw new RuntimeException(e);
         }
     }
-    @GetMapping("/consultar/bodega/{id}/buscar")
-    public ResponseEntity<RespuestaProductos> listarProductosNombreBodega(@PathVariable Long id, @RequestParam String nombre) {
+    @GetMapping("/consultar-productos/{idBodega}/buscar")
+    public ResponseEntity<RespuestaProductos> listarProductosNombreBodega(@PathVariable Long idBodega, @RequestParam String nombre) {
         RespuestaProductos respuesta = new RespuestaProductos();
         try{
-            List<?> productos = productoBusiness.listProductsNombreBodega(nombre,id);
+            List<?> productos = productoBusiness.listProductsNombreBodega(nombre,idBodega);
             if (productos.size()>0)
                 respuesta.setMensaje("Se encontraron "+productos.size()+" productos");
             else
@@ -133,11 +133,11 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/consultar/bodega/{id2}/categoria/{id1}")
-    public ResponseEntity<RespuestaProductos> listarProductosCategoria(@PathVariable Long id1, @PathVariable Long id2) {
+    @GetMapping("/consultar-productos/{idBodega}/{idCategoria}")
+    public ResponseEntity<RespuestaProductos> listarProductosCategoria(@PathVariable Long idCategoria, @PathVariable Long idBodega) {
         RespuestaProductos respuesta = new RespuestaProductos();
         try{
-            List<Producto> productos = productoBusiness.listProductsCategory(id1,id2);
+            List<Producto> productos = productoBusiness.listProductsCategory(idCategoria,idBodega);
             if (productos.size()>0)
                 respuesta.setMensaje("Se encontraron "+productos.size()+" productos de la categoria " + productos.get(0).categoria.getNombre());
             else
@@ -150,14 +150,14 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @PutMapping("actualizar/{id}")
-    public ResponseEntity<RespuestaProductos> actualizarProducto(@PathVariable Long id, @RequestBody Producto producto){
+    @PutMapping("actualizar/{idProducto}")
+    public ResponseEntity<RespuestaProductos> actualizarProducto(@PathVariable Long idProducto, @RequestBody Producto producto){
         RespuestaProductos respuesta = new RespuestaProductos();
         try{
-            Producto productoupdate = productoBusiness.actualizarProducto(id,producto.getNombre(),producto.getStock(),producto.getPrecio());
+            Producto productoupdate = productoBusiness.actualizarProducto(idProducto,producto.getNombre(),producto.getStock(),producto.getPrecio());
 
             respuesta.setMensaje("Producto Actualizado de manera exitosa");
-            respuesta.setProductos(productoBusiness.showProduct(id));
+            respuesta.setProductos(productoBusiness.showProduct(idProducto));
             return new ResponseEntity<>(respuesta, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -165,10 +165,10 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<RespuestaMensaje> deleteProduct(@PathVariable Long id){
+    @DeleteMapping("/eliminar/{idProducto}")
+    public ResponseEntity<RespuestaMensaje> deleteProduct(@PathVariable Long idProducto){
         try{
-            productoBusiness.removeProduct(id);
+            productoBusiness.removeProduct(idProducto);
             return new ResponseEntity<>(new RespuestaMensaje("Producto Eliminado de manera Exitosa"),HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

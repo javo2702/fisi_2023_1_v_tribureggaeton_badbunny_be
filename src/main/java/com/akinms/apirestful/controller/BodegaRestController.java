@@ -19,7 +19,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping("/api/atencioncliente/v1/bodegas")
+@RequestMapping("/ne-gestion-bodegas/akinms/atencion-cliente/v1")
 public class BodegaRestController {
     @Autowired
     private IBodegaBusiness bodegaBusiness;
@@ -39,7 +39,7 @@ public class BodegaRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }*/
-    @GetMapping("/listarbodegas/")
+    @GetMapping("/listar-bodegas")
     public ResponseEntity<RespuestaBodegas> listAll() {
         RespuestaBodegas rp = new RespuestaBodegas();
         try{
@@ -64,7 +64,7 @@ public class BodegaRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/listarbodegas/premium")
+    @GetMapping("/listar-bodegas/premium")
     public ResponseEntity<RespuestaBodegas> listAllPremium() {
         RespuestaBodegas rp = new RespuestaBodegas();
         try{
@@ -90,12 +90,12 @@ public class BodegaRestController {
         }
     }
 
-    @GetMapping("/consultar/{id}")
-    public ResponseEntity<RespuestaBodegas> show(@PathVariable Long id){
+    @GetMapping("/consultar/{idBodega}")
+    public ResponseEntity<RespuestaBodegas> show(@PathVariable Long idBodega){
         //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
         RespuestaBodegas rp = new RespuestaBodegas();
         try{
-            Bodega bodegas = bodegaBusiness.show(id);
+            Bodega bodegas = bodegaBusiness.show(idBodega);
             BodegaUbicacion bodegaRespuesta = new BodegaUbicacion(
                     bodegas.getIdbodega(),
                     bodegas.getNombre(),

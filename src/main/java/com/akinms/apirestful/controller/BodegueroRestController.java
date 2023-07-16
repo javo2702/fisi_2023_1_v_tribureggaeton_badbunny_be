@@ -24,12 +24,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/gestioninventario/v1/bodegueros")
+@RequestMapping("/ne-gestion-usuarios/akinms/gestion-inventario/v1")
 public class BodegueroRestController {
     @Autowired
     private IBodegueroBusiness bodegueroBusiness;
 
-    @GetMapping("/buscarbodeguero")
+    @GetMapping("/buscar-bodeguero")
     public ResponseEntity<RespuestaBodeguero> buscarCliente(/*@RequestBody Cliente cliente*/@RequestParam String correo, @RequestParam String pass) {
         //public ResponseEntity<List<Categoria>> listAll(){
         RespuestaBodeguero respuesta = new RespuestaBodeguero();
@@ -53,13 +53,13 @@ public class BodegueroRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/consultar/{id}")
-    public ResponseEntity<RespuestaBodeguero> show(@PathVariable Long id){
+    @GetMapping("/consultar/{idBodeguero}")
+    public ResponseEntity<RespuestaBodeguero> show(@PathVariable Long idBodeguero){
         //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
         RespuestaBodeguero respuesta = new RespuestaBodeguero();
         respuesta.setMensaje("Error al obtener bodeguero");
         try{
-            Bodeguero bodeguero = bodegueroBusiness.show(id);
+            Bodeguero bodeguero = bodegueroBusiness.show(idBodeguero);
             BodegueroEncontrado cli = new BodegueroEncontrado();
             cli.setIdbodeguero(bodeguero.getIdbodeguero());
             cli.setApellidos(bodeguero.getApellidos());
@@ -69,7 +69,7 @@ public class BodegueroRestController {
             cli.setIdbodega(bodeguero.getBodega().getIdbodega());
             cli.setContraseña("");
             respuesta.setBodeguero(cli);
-            respuesta.setMensaje("Bodeguero encontrado con id: "+id);
+            respuesta.setMensaje("Bodeguero encontrado con id: "+idBodeguero);
             return new ResponseEntity<>(respuesta,
                     HttpStatus.OK);
         } catch (BusinessException e){

@@ -21,12 +21,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/atencioncliente/v1/clientes")
+@RequestMapping("/ne-gestion-usuarios/akinms/atencion-cliente/v1")
 public class ClienteRestController {
     @Autowired
     private IClienteBusiness clienteBusiness;
 
-    @PostMapping("/buscarcliente")
+    @PostMapping("/buscar-cliente")
     public ResponseEntity<RespuestaCliente> buscarCliente(/*@RequestBody Cliente cliente*/@RequestParam String correo, @RequestParam String pass) {
         //public ResponseEntity<List<Categoria>> listAll(){
         RespuestaCliente respuesta = new RespuestaCliente();
@@ -61,13 +61,13 @@ public class ClienteRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/consultar/{id}")
-    public ResponseEntity<RespuestaCliente> show(@PathVariable Long id){
+    @GetMapping("/consultar/{idCliente}")
+    public ResponseEntity<RespuestaCliente> show(@PathVariable Long idCliente){
         //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
         RespuestaCliente respuesta = new RespuestaCliente();
         respuesta.setMensaje("Error al obtener cliente");
         try{
-            Cliente cliente = clienteBusiness.show(id);
+            Cliente cliente = clienteBusiness.show(idCliente);
             ClienteEncontrado cli = new ClienteEncontrado();
             cli.setIdcliente(cliente.getIdcliente());
             cli.setApellidos(cliente.getApellidos());
@@ -76,7 +76,7 @@ public class ClienteRestController {
             cli.setDireccion(cliente.getDireccion());
             cli.setCorreo(cliente.getCorreo());
             cli.setContraseña("");
-            respuesta.setMensaje("Cliente encontrado con id: "+id);
+            respuesta.setMensaje("Cliente encontrado con id: "+idCliente);
             respuesta.setCliente(cli);
             return new ResponseEntity<>(respuesta,
                     HttpStatus.OK);

@@ -23,16 +23,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/atencioncliente/v1/categorias")
+@RequestMapping("/ne-gestion-productos/akinms/atencion-cliente/v1")
 public class CategoriaRestController {
     @Autowired
     private ICategoriaBusiness categoriaBusiness;
 
-    @GetMapping("/listar/bodega/{id}")
-    public ResponseEntity<RespuestaCategoria> listCategoriesBodega(@PathVariable Long id){
+    @GetMapping("/listar-categorias/{idBodega}")
+    public ResponseEntity<RespuestaCategoria> listCategoriesBodega(@PathVariable Long idBodega){
         RespuestaCategoria respuesta = new RespuestaCategoria();
         try{
-            List<Categoria> categoriasBodega = categoriaBusiness.listarCategoriasBodega(id);
+            List<Categoria> categoriasBodega = categoriaBusiness.listarCategoriasBodega(idBodega);
             List<Categorias> respuestaCategorias = new ArrayList<>();
             for(Categoria c:categoriasBodega){
                 Categorias ca = new Categorias();

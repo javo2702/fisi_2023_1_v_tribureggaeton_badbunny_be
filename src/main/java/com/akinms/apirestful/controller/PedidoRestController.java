@@ -30,17 +30,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/atencioncliente/v1/pedidos")
+@RequestMapping("/ne-gestion-pedidos/akinms/atencion-cliente/v1")
 public class PedidoRestController {
 
     @Autowired
     private IPedidoBusiness pedidoBusiness;
 
-    @GetMapping("/consultar/cliente/{id}")
-    public ResponseEntity<RespuestaPedido> listPedidosCliente(@PathVariable Long id){
+    @GetMapping("/consultar-cliente/{idCliente}")
+    public ResponseEntity<RespuestaPedido> listPedidosCliente(@PathVariable Long idCliente){
         RespuestaPedido respuestaPedido = new RespuestaPedido();
         try{
-            List<Pedido> pedidosCliente = pedidoBusiness.getPedidosCliente(id);
+            List<Pedido> pedidosCliente = pedidoBusiness.getPedidosCliente(idCliente);
             List<Pedidos> pedidosClienteResponse = new ArrayList<>();
             //List<DetallePedidos> detallesResponse = new ArrayList<>();
             for(Pedido p : pedidosCliente){
@@ -84,11 +84,11 @@ public class PedidoRestController {
             throw new RuntimeException(e);
         }
     }
-    @GetMapping("/consultar/bodega/{id}")
-    public ResponseEntity<RespuestaPedido> listPedidosBodega(@PathVariable Long id){
+    @GetMapping("/consultar-pedidos/{idBodega}")
+    public ResponseEntity<RespuestaPedido> listPedidosBodega(@PathVariable Long idBodega){
         RespuestaPedido respuestaPedido = new RespuestaPedido();
         try{
-            List<Pedido> pedidosBodega = pedidoBusiness.getPedidosBodega(id);
+            List<Pedido> pedidosBodega = pedidoBusiness.getPedidosBodega(idBodega);
             if(pedidosBodega.size()>0)
                 respuestaPedido.setMensaje("Cantidad de pedidos: "+pedidosBodega.size());
             else
@@ -101,13 +101,13 @@ public class PedidoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/consultar/ventas/bodega/{id}/fechas")
-    public ResponseEntity<RespuestaVentas> getVentasSemanales(@PathVariable Long id, @RequestParam String fecha_inicio, @RequestParam String fecha_fin){
+    @GetMapping("/consultar-ventas/{idBodega}/fechas")
+    public ResponseEntity<RespuestaVentas> getVentasSemanales(@PathVariable Long idBodega, @RequestParam String fecha_inicio, @RequestParam String fecha_fin){
         RespuestaVentas respuestaVentas = new RespuestaVentas();
         try{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             //Ventas ventasSemanales = pedidoBusiness.getVentasSemanes(sdf.parse(fecha_inicio),sdf.parse(fecha_fin),id);
-            List<Pedido> ventasSemanales = pedidoBusiness.getVentasSemanes(fecha_inicio,fecha_fin,id);
+            List<Pedido> ventasSemanales = pedidoBusiness.getVentasSemanes(fecha_inicio,fecha_fin,idBodega);
             List<Ventas> ventas = new ArrayList<>();
             for(Pedido p : ventasSemanales){
                 Ventas v = new Ventas();
@@ -177,11 +177,11 @@ public class PedidoRestController {
         }
     }
 
-    @GetMapping("/consultar/cliente/{id_cliente}/pedido/{id_pedido}")
-    public ResponseEntity<RespuestaPedido> detallePedidoCliente(@PathVariable Long id_cliente, @PathVariable Long id_pedido) {
+    @GetMapping("/consultar-cliente/{idCliente}/{idPedido}")
+    public ResponseEntity<RespuestaPedido> detallePedidoCliente(@PathVariable Long idCliente, @PathVariable Long idPedido) {
         RespuestaPedido respuestaPedido = new RespuestaPedido();
         try{
-            Pedido pedidoCliente = pedidoBusiness.getDetallePedidoCliente(id_cliente,id_pedido);
+            Pedido pedidoCliente = pedidoBusiness.getDetallePedidoCliente(idCliente,idPedido);
             Pedidos pedidoClienteResponse = new Pedidos();
 
             List<DetallePedidos> detallesResponse = new ArrayList<>();
@@ -209,7 +209,7 @@ public class PedidoRestController {
                 bu.setDireccion(pedidoCliente.getBodega().getUbicacion().getNombre());
             pedidoClienteResponse.setBodega(bu);
 
-            respuestaPedido.setMensaje("Pedido obtenido con id: "+id_pedido);
+            respuestaPedido.setMensaje("Pedido obtenido con id: "+idPedido);
             respuestaPedido.setPedidos(pedidoClienteResponse);
 
             return new ResponseEntity<>(respuestaPedido,HttpStatus.OK);
@@ -222,14 +222,14 @@ public class PedidoRestController {
             throw new RuntimeException(e);
         }
     }
-    @PutMapping("/actualizarestado/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Pedido pedido){
+    @PutMapping("/actualizar-estado/{idPedido}")
+    public ResponseEntity<?> update(@PathVariable Long idPedido, @RequestBody Pedido pedido){
         RespuestaMensaje respuesta = new RespuestaMensaje();
         respuesta.setMensaje("Error al actualizar el estado del pedido");
         //String respuesta = "Error al actualizar el estado del pedido";
         //respuesta.setMensaje("Error al actualizar el estado del pedido");
         try {
-            Pedido pedidoActualizado = pedidoBusiness.updateEstadoPedido(pedido.getEstado(),id);
+            Pedido pedidoActualizado = pedidoBusiness.updateEstadoPedido(pedido.getEstado(),idPedido);
             respuesta.setMensaje("Se ha actualizado el estado del pedido de manera exitosa");
             //respuesta = "Se ha actualizado el estado del pedido de manera exitosa";
             //respuesta.setPedidos(pedidoActualizado);
